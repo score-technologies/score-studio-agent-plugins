@@ -1,0 +1,30 @@
+{
+  "name": "score-studio",
+  "version": "0.1.0",
+  "description": "Operate evidence-gated computer-vision workflows in Score Studio from ChatGPT and Codex.",
+  "author": {
+    "name": "Score Technologies",
+    "url": "https://github.com/score-technologies"
+  },
+  "homepage": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "repository": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "license": "Apache-2.0",
+  "keywords": ["computer-vision", "datasets", "training", "evaluation", "deployment", "mcp"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Score Studio",
+    "shortDescription": "Build and verify vision systems with evidence.",
+    "longDescription": "Inspect versioned datasets and models, start tracked training and evaluation runs, review measured reports, verify deployments, and run typed Score Studio workflows.",
+    "developerName": "Score Technologies",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/score-technologies/score-studio-agent-plugins",
+    "defaultPrompt": [
+      "Show my Score Studio datasets and model evidence.",
+      "Compare recent evaluation reports before release.",
+      "Verify my active deployment and explain any risk."
+    ],
+    "brandColor": "#111827"
+  },
+  "mcpServers": "./.mcp.json"
+}

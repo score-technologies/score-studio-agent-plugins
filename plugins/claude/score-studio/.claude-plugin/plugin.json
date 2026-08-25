@@ -1,0 +1,13 @@
+{
+  "name": "score-studio",
+  "version": "0.1.0",
+  "description": "Operate evidence-gated computer-vision workflows in Score Studio.",
+  "author": {
+    "name": "Score Technologies",
+    "url": "https://github.com/score-technologies"
+  },
+  "homepage": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "repository": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "license": "Apache-2.0",
+  "keywords": ["computer-vision", "evaluation", "deployment", "mcp"]
+}

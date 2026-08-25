@@ -1,0 +1,18 @@
+{
+  "name": "score-technologies",
+  "owner": {
+    "name": "Score Technologies"
+  },
+  "metadata": {
+    "description": "Agent plugins from Score Technologies",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "score-studio",
+      "source": "./plugins/claude/score-studio",
+      "description": "Operate evidence-gated computer-vision workflows in Score Studio",
+      "version": "0.1.0"
+    }
+  ]
+}
