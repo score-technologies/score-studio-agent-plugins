@@ -39,6 +39,18 @@ SCORESTUDIO_URL=https://your-score-studio.example npm run start:http
 The endpoint is `http://127.0.0.1:3000/mcp`; each request must include its own
 `Authorization: Bearer …` header. `/healthz` does not require authentication.
 
+## Container deployment
+
+The production image listens on `0.0.0.0:3000` and requires only the upstream
+Score Studio API URL; callers provide their own bearer token on each request.
+
+```bash
+docker build -t score-studio-mcp .
+docker run --rm -p 3000:3000 \
+  -e SCORESTUDIO_URL=https://your-score-studio-api.example \
+  score-studio-mcp
+```
+
 ## Packages
 
 | Host | Package | Discovery route |
