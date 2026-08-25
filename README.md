@@ -1,8 +1,14 @@
 # Score Studio agent plugins
 
-One Score Studio MCP server, packaged for the major agent ecosystems. It exposes
-the evidence-bearing computer-vision loop without publishing private source
-identifiers or internal implementation details.
+## Give your agents sight.
+
+Score Studio is the computer vision layer for agents, automating data
+generation, annotation, training, evaluation, workflows, and deployment in one
+evidence-backed system.
+
+This repository brings that complete vision loop to the major agent ecosystems
+through one portable MCP server, without publishing private source identifiers
+or internal implementation details.
 
 ## What an agent can do
 
