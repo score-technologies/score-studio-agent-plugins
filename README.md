@@ -1,8 +1,8 @@
 # Score Studio agent plugins
 
-One Score Studio MCP server, packaged for the major agent ecosystems. The
-server follows Score Studio company `main` at `29c6104` (2026-08-25) and exposes
-the evidence-bearing computer-vision loop instead of a generic REST passthrough.
+One Score Studio MCP server, packaged for the major agent ecosystems. It exposes
+the evidence-bearing computer-vision loop without publishing private source
+identifiers or internal implementation details.
 
 ## What an agent can do
 

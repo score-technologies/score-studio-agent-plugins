@@ -3,7 +3,7 @@ import * as z from "zod/v4";
 
 import { ScoreStudioApiError, ScoreStudioClient } from "./client.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 
 export interface ServerOptions {
   baseUrl?: string;
