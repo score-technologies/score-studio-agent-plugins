@@ -31,15 +31,16 @@ Requires Node.js 20+ and a Score Studio bearer token or API key.
 ```bash
 npm install
 npm run build
-SCORESTUDIO_URL=https://your-score-studio.example \
-SCORESTUDIO_TOKEN=your-token \
-npm start
+SCORESTUDIO_TOKEN=your-token npm start
 ```
+
+The API defaults to `https://api.scorestudio.ai`. Set `SCORESTUDIO_URL` only to
+target another Score Studio environment.
 
 For local Streamable HTTP development:
 
 ```bash
-SCORESTUDIO_URL=https://your-score-studio.example npm run start:http
+npm run start:http
 ```
 
 The endpoint is `http://127.0.0.1:3000/mcp`; each request must include its own
@@ -47,14 +48,12 @@ The endpoint is `http://127.0.0.1:3000/mcp`; each request must include its own
 
 ## Container deployment
 
-The production image listens on `0.0.0.0:3000` and requires only the upstream
-Score Studio API URL; callers provide their own bearer token on each request.
+The production image listens on `0.0.0.0:3000` and uses the production Score
+Studio API by default; callers provide their own bearer token on each request.
 
 ```bash
 docker build -t score-studio-mcp .
-docker run --rm -p 3000:3000 \
-  -e SCORESTUDIO_URL=https://your-score-studio-api.example \
-  score-studio-mcp
+docker run --rm -p 3000:3000 score-studio-mcp
 ```
 
 ## Packages
@@ -75,8 +74,9 @@ marketplace requirements.
 
 ## Authentication and release boundary
 
-Local packages read `SCORESTUDIO_URL` and `SCORESTUDIO_TOKEN` from the host's
-secret configuration. They do not persist or print secrets.
+Local packages read `SCORESTUDIO_TOKEN` from the host's secret configuration
+and optionally accept a `SCORESTUDIO_URL` override. They do not persist or print
+secrets.
 
 A public ChatGPT listing cannot use this manual-token flow. It requires a stable
 public HTTPS MCP endpoint plus OAuth 2.1 discovery/authorization. That hosted

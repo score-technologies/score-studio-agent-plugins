@@ -3,7 +3,8 @@ import * as z from "zod/v4";
 
 import { ScoreStudioApiError, ScoreStudioClient } from "./client.js";
 
-const VERSION = "0.1.1";
+const VERSION = "0.1.2";
+export const DEFAULT_SCORESTUDIO_URL = "https://api.scorestudio.ai";
 
 export interface ServerOptions {
   baseUrl?: string;
@@ -11,9 +12,8 @@ export interface ServerOptions {
 }
 
 function config(options: ServerOptions): { baseUrl: string; token: string } {
-  const baseUrl = options.baseUrl ?? process.env.SCORESTUDIO_URL ?? "";
+  const baseUrl = options.baseUrl ?? process.env.SCORESTUDIO_URL ?? DEFAULT_SCORESTUDIO_URL;
   const token = options.token ?? process.env.SCORESTUDIO_TOKEN ?? "";
-  if (!baseUrl) throw new Error("SCORESTUDIO_URL is required");
   if (!token) throw new Error("SCORESTUDIO_TOKEN is required");
   return { baseUrl, token };
 }

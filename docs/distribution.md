@@ -67,11 +67,11 @@ Lovable can consume Score Studio as a chat connector. Business and Enterprise
 workspaces can add custom MCP servers; Lovable Desktop can also add a custom
 local MCP command.
 
-For local Desktop testing, use `node <repo>/dist/stdio.js` with the two Score
-Studio environment variables. For the web product, connect the future hosted
-HTTPS `/mcp` endpoint through Connectors → Chat connectors. This gives Lovable
-Score Studio context and actions while building an app; it does not embed Score
-Studio into the deployed app.
+For local Desktop testing, use `node <repo>/dist/stdio.js` with
+`SCORESTUDIO_TOKEN`; set `SCORESTUDIO_URL` only for a non-production API. For the
+web product, connect the future hosted HTTPS `/mcp` endpoint through Connectors
+→ Chat connectors. This gives Lovable Score Studio context and actions while
+building an app; it does not embed Score Studio into the deployed app.
 
 Lovable does not currently document a self-service third-party marketplace
 submission comparable to Cursor, OpenAI, or Anthropic. Treat it as a connector
@@ -84,7 +84,6 @@ Use `.vscode/mcp.json` for a repository-local install:
 ```json
 {
   "inputs": [
-    { "id": "scorestudio-url", "type": "promptString", "description": "Score Studio URL" },
     { "id": "scorestudio-token", "type": "promptString", "description": "Score Studio token", "password": true }
   ],
   "servers": {
@@ -92,7 +91,6 @@ Use `.vscode/mcp.json` for a repository-local install:
       "command": "npx",
       "args": ["-y", "@score-technologies/score-studio-mcp"],
       "env": {
-        "SCORESTUDIO_URL": "${input:scorestudio-url}",
         "SCORESTUDIO_TOKEN": "${input:scorestudio-token}"
       }
     }

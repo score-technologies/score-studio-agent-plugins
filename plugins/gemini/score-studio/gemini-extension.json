@@ -1,14 +1,8 @@
 {
   "name": "score-studio",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Operate evidence-gated computer-vision workflows in Score Studio.",
   "settings": [
-    {
-      "name": "Score Studio URL",
-      "description": "Base URL of the Score Studio API.",
-      "envVar": "SCORESTUDIO_URL",
-      "sensitive": false
-    },
     {
       "name": "Score Studio token",
       "description": "Bearer token or API key for Score Studio.",

@@ -5,7 +5,11 @@ import test from "node:test";
 import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
 
-import { buildServer } from "../dist/server.js";
+import { buildServer, DEFAULT_SCORESTUDIO_URL } from "../dist/server.js";
+
+test("uses the production Score Studio API as the default", () => {
+  assert.equal(DEFAULT_SCORESTUDIO_URL, "https://api.scorestudio.ai");
+});
 
 test("lists tools and forwards authenticated Score Studio requests", async (t) => {
   const requests = [];
@@ -27,7 +31,7 @@ test("lists tools and forwards authenticated Score Studio requests", async (t) =
   await server.connect(serverTransport);
   t.after(() => server.close());
 
-  const client = new Client({ name: "test", version: "0.1.0" });
+  const client = new Client({ name: "test", version: "0.1.2" });
   await client.connect(clientTransport);
   t.after(() => client.close());
 

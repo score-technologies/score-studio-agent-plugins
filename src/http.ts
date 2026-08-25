@@ -4,11 +4,11 @@ import { createServer } from "node:http";
 import { toNodeHandler, type NodeIncomingMessageLike, type NodeServerResponseLike } from "@modelcontextprotocol/node";
 import { createMcpHandler } from "@modelcontextprotocol/server";
 
-import { buildServer } from "./server.js";
+import { buildServer, DEFAULT_SCORESTUDIO_URL } from "./server.js";
 
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
-const baseUrl = process.env.SCORESTUDIO_URL ?? "";
+const baseUrl = process.env.SCORESTUDIO_URL ?? DEFAULT_SCORESTUDIO_URL;
 
 const handler = createMcpHandler(({ requestInfo }) => {
   const authorization = requestInfo?.headers.get("authorization") ?? "";

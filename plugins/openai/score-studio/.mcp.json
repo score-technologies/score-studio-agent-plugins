@@ -4,7 +4,6 @@
       "command": "npx",
       "args": ["-y", "@score-technologies/score-studio-mcp"],
       "env": {
-        "SCORESTUDIO_URL": "${SCORESTUDIO_URL}",
         "SCORESTUDIO_TOKEN": "${SCORESTUDIO_TOKEN}"
       }
     }

@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Agent plugins from Score Technologies",
-    "version": "0.1.0"
+    "version": "0.1.2"
   },
   "plugins": [
     {
       "name": "score-studio",
       "source": "./plugins/claude/score-studio",
       "description": "Operate evidence-gated computer-vision workflows in Score Studio",
-      "version": "0.1.0"
+      "version": "0.1.2"
     }
   ]
 }
