@@ -1,6 +1,6 @@
 export interface ScoreStudioClientOptions {
   baseUrl: string;
-  token: string;
+  token: string | (() => Promise<string>);
   timeoutMs?: number;
 }
 
@@ -18,7 +18,7 @@ export class ScoreStudioApiError extends Error {
 
 export class ScoreStudioClient {
   private readonly baseUrl: string;
-  private readonly token: string;
+  private readonly token: string | (() => Promise<string>);
   private readonly timeoutMs: number;
 
   constructor(options: ScoreStudioClientOptions) {
@@ -37,10 +37,11 @@ export class ScoreStudioClient {
       if (value !== undefined) url.searchParams.set(key, String(value));
     }
 
+    const token = typeof this.token === "function" ? await this.token() : this.token;
     const requestInit: RequestInit = {
       method,
       headers: {
-        Authorization: `Bearer ${this.token}`,
+        Authorization: `Bearer ${token}`,
         Accept: "application/json",
         ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
       },

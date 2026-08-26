@@ -26,13 +26,39 @@ not exposed in the first version.
 
 ## Local server
 
-Requires Node.js 20+ and a Score Studio bearer token or API key.
+Requires Node.js 20+. On first interactive start, choose browser OAuth or paste
+an API key. The credential is saved in the platform config directory with
+owner-only permissions and reused on later starts.
 
 ```bash
 npm install
 npm run build
-SCORESTUDIO_TOKEN=your-token npm start
+npm start
 ```
+
+Manage the saved login explicitly with:
+
+```bash
+npm run auth -- login
+npm run auth -- logout
+# or, after installing the package globally:
+score-studio-mcp auth login
+score-studio-mcp auth logout
+```
+
+Browser login uses Authorization Code with PKCE and a temporary loopback
+callback. `SCORESTUDIO_OAUTH_ISSUER`, `SCORESTUDIO_OAUTH_METADATA_URL`,
+`SCORESTUDIO_OAUTH_CLIENT_ID`, and `SCORESTUDIO_OAUTH_RESOURCE` can override
+OAuth discovery settings for local or self-hosted environments. OAuth access
+tokens are refreshed automatically when the server returns a refresh token.
+The local CLI requests an audience matching the normalized `SCORESTUDIO_URL`
+because it calls that API directly. Its registered `score-studio-cli` client
+must permit loopback redirects on `http://127.0.0.1` with arbitrary ports, as
+required for native-app PKCE. Hosted MCP/Claude OAuth uses a separate MCP
+resource and client registration.
+
+For CI and MCP hosts without an interactive terminal, set
+`SCORESTUDIO_TOKEN`; startup fails promptly instead of waiting for input.
 
 The API defaults to `https://api.scorestudio.ai`. Set `SCORESTUDIO_URL` only to
 target another Score Studio environment.
@@ -74,9 +100,9 @@ marketplace requirements.
 
 ## Authentication and release boundary
 
-Local packages read `SCORESTUDIO_TOKEN` from the host's secret configuration
-and optionally accept a `SCORESTUDIO_URL` override. They do not persist or print
-secrets.
+Local packages prefer `SCORESTUDIO_TOKEN` from the host's secret configuration,
+then use the saved OAuth session or API key. `SCORESTUDIO_URL` optionally targets
+another Score Studio environment. Secrets are never printed.
 
 A public ChatGPT listing cannot use this manual-token flow. It requires a stable
 public HTTPS MCP endpoint plus OAuth 2.1 discovery/authorization. That hosted
