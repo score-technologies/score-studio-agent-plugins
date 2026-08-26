@@ -39,8 +39,8 @@ npm start
 Manage the saved login explicitly with:
 
 ```bash
-npm run auth -- login
-npm run auth -- logout
+npm run auth
+npm run auth:logout
 # or, after installing the package globally:
 score-studio auth login
 score-studio auth logout
