@@ -190,7 +190,10 @@ async function promptApiKey(): Promise<StoredCredential> {
   } finally { rl.close(); muted.destroy(); }
 }
 
-const AUTH_METHODS = ["Browser OAuth", "API key"] as const;
+const AUTH_METHODS = [
+  { label: "Browser OAuth", description: "Open a browser and save a renewable session" },
+  { label: "API key", description: "Paste and securely save an existing key" },
+] as const;
 
 export function nextAuthSelection(current: number, key: "up" | "down"): number {
   const offset = key === "up" ? -1 : 1;
@@ -200,18 +203,32 @@ export function nextAuthSelection(current: number, key: "up" | "down"): number {
 async function selectAuthMethod(): Promise<"oauth" | "api_key"> {
   const input = process.stdin;
   const output = process.stderr;
+  const color = process.env.NO_COLOR === undefined && process.env.TERM !== "dumb";
   let selected = 0;
   let rendered = false;
+  const renderedLines = AUTH_METHODS.length + 1;
 
   const render = () => {
-    if (rendered) output.write(`\x1b[${AUTH_METHODS.length}A`);
-    for (const [index, label] of AUTH_METHODS.entries()) {
-      output.write(`\r\x1b[2K${index === selected ? "❯" : " "} ${label}\n`);
+    if (rendered) output.write(`\x1b[${renderedLines}A`);
+    for (const [index, method] of AUTH_METHODS.entries()) {
+      const active = index === selected;
+      const label = method.label.padEnd(15);
+      const content = `${active ? "❯" : " "}  ${label} ${method.description}`;
+      const styled = color
+        ? active
+          ? `\x1b[46;30;1m ${content} \x1b[0m`
+          : `\x1b[2m ${content} \x1b[0m`
+        : active
+          ? `▶ [${method.label}] — ${method.description}`
+          : `  ${method.label} — ${method.description}`;
+      output.write(`\r\x1b[2K${styled}\n`);
     }
+    const hint = "↑/↓ move   Enter select   Ctrl+C cancel";
+    output.write(`\r\x1b[2K${color ? `\x1b[2m  ${hint}\x1b[0m` : `  ${hint}`}\n`);
     rendered = true;
   };
 
-  output.write("Sign in with:\n\x1b[?25l");
+  output.write(`${color ? "\x1b[1m" : ""}? Choose how to sign in${color ? "\x1b[0m" : ""}\n\n\x1b[?25l`);
   render();
   emitKeypressEvents(input);
   const wasRaw = input.isRaw;
