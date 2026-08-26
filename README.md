@@ -42,8 +42,8 @@ Manage the saved login explicitly with:
 npm run auth -- login
 npm run auth -- logout
 # or, after installing the package globally:
-score-studio-mcp auth login
-score-studio-mcp auth logout
+score-studio auth login
+score-studio auth logout
 ```
 
 Browser login uses Authorization Code with PKCE and a temporary loopback

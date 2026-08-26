@@ -166,7 +166,7 @@ export async function oauthLogin(baseUrl = process.env.SCORESTUDIO_URL ?? DEFAUL
 }
 
 async function refresh(credential: Extract<StoredCredential, { type: "oauth" }>): Promise<Extract<StoredCredential, { type: "oauth" }>> {
-  if (!credential.refreshToken) throw new Error("OAuth session expired; run `score-studio-mcp auth login` again");
+  if (!credential.refreshToken) throw new Error("OAuth session expired; run `score-studio auth login` again");
   const token = await exchangeToken(credential.tokenEndpoint, { grant_type: "refresh_token", refresh_token: credential.refreshToken, client_id: credential.clientId, resource: credential.resource });
   if (typeof token.access_token !== "string") throw new Error("OAuth refresh did not return an access token");
   return {
@@ -190,7 +190,7 @@ async function promptApiKey(): Promise<StoredCredential> {
 }
 
 export async function interactiveLogin(): Promise<StoredCredential> {
-  if (!process.stdin.isTTY || !process.stderr.isTTY) throw new Error("Authentication is required. Run `score-studio-mcp auth login` in a terminal or set SCORESTUDIO_TOKEN.");
+  if (!process.stdin.isTTY || !process.stderr.isTTY) throw new Error("Authentication is required. Run `score-studio auth login` in a terminal or set SCORESTUDIO_TOKEN.");
   const rl = createInterface({ input: process.stdin, output: process.stderr });
   let choice: string;
   try { choice = (await rl.question("Sign in with (1) browser OAuth or (2) API key? [1]: ")).trim(); }
@@ -205,7 +205,7 @@ export async function resolveToken(options: { interactive?: boolean } = {}): Pro
   if (process.env.SCORESTUDIO_TOKEN) return process.env.SCORESTUDIO_TOKEN;
   let credential = await loadCredential();
   if (!credential) {
-    if (options.interactive === false) throw new Error("Authentication is required; set SCORESTUDIO_TOKEN or run `score-studio-mcp auth login`.");
+    if (options.interactive === false) throw new Error("Authentication is required; set SCORESTUDIO_TOKEN or run `score-studio auth login`.");
     credential = await interactiveLogin();
   }
   if (credential.type === "api_key") return credential.token;

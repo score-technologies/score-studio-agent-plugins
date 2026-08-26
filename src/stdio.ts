@@ -15,9 +15,9 @@ async function main() {
       console.error(await logout() ? "Logged out of Score Studio." : "No saved Score Studio login was found.");
       return;
     }
-    throw new Error("Usage: score-studio-mcp auth <login|logout>");
+    throw new Error("Usage: score-studio auth <login|logout>");
   }
-  if (group) throw new Error("Usage: score-studio-mcp [auth <login|logout>]");
+  if (group) throw new Error("Usage: score-studio [auth <login|logout>]");
   await resolveToken({ interactive: Boolean(process.stdin.isTTY && process.stderr.isTTY) });
   serveStdio(() => buildServer({ tokenProvider: () => resolveToken({ interactive: false }) }), { onerror: (error) => console.error(error) });
 }
