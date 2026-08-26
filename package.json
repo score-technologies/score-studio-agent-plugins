@@ -1,6 +1,6 @@
 {
   "name": "@score-technologies/score-studio-mcp",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": false,
   "description": "Portable Score Studio MCP server and agent plugin packages",
   "license": "Apache-2.0",

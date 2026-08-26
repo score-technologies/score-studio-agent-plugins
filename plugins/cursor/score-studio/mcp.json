@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "score-studio": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@score-technologies/score-studio-mcp"
+      ],
+      "env": {
+        "SCORESTUDIO_TOKEN": "${SCORESTUDIO_TOKEN}"
+      }
+    }
+  }
+}

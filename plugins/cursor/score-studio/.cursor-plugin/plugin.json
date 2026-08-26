@@ -1,0 +1,39 @@
+{
+  "name": "score-studio",
+  "displayName": "Score Studio",
+  "version": "0.2.0",
+  "description": "Give your agents sight with evidence-backed computer-vision data, training, evaluation, workflows, and deployment.",
+  "author": {
+    "name": "Score Technologies"
+  },
+  "homepage": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "repository": "https://github.com/score-technologies/score-studio-agent-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "computer-vision",
+    "datasets",
+    "annotation",
+    "training",
+    "evaluation",
+    "evidence",
+    "workflows",
+    "deployment",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "SCORESTUDIO_TOKEN": {
+        "type": "string",
+        "title": "Score Studio token",
+        "description": "Bearer token or API key for Score Studio",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "SCORESTUDIO_TOKEN"
+    ]
+  }
+}

@@ -63,7 +63,8 @@ docker run --rm -p 3000:3000 score-studio-mcp
 | ChatGPT + Codex | `plugins/openai/score-studio` | OpenAI universal plugin directory |
 | Claude Code | `plugins/claude/score-studio` | Anthropic marketplace or this repo's marketplace |
 | Gemini CLI | `plugins/gemini/score-studio` | Git install and Gemini extension gallery |
-| Cursor | Existing `score-studio-cursor-plugin` | Cursor Marketplace |
+| Cursor | `plugins/cursor/score-studio` | This repository's Cursor marketplace; standalone marketplace repo remains supported |
+| Hermes Agent | `skills/score-studio` + `plugins/hermes/score-studio` | Hermes GitHub skill tap plus native MCP client |
 | Lovable | Shared remote MCP endpoint | Custom chat connector; no equivalent public plugin submission flow yet |
 | GitHub Copilot / VS Code | Shared local or remote MCP endpoint | Manual MCP config, then GitHub MCP Registry when eligible |
 | Windsurf | Shared local or remote MCP endpoint | MCP Marketplace submission or manual Cascade config |
@@ -71,6 +72,23 @@ docker run --rm -p 3000:3000 score-studio-mcp
 
 See [distribution.md](docs/distribution.md) for installation, deployment, and
 marketplace requirements.
+
+### Cursor
+
+Import this repository as a Cursor marketplace and install `score-studio`. The
+plugin declares `SCORESTUDIO_TOKEN` as a required secret variable and starts the
+shared MCP package through `npx`.
+
+### Hermes Agent
+
+```bash
+hermes skills tap add score-technologies/score-studio-agent-plugins
+hermes skills install score-technologies/score-studio-agent-plugins/score-studio
+```
+
+Then merge
+[`plugins/hermes/score-studio/config.example.yaml`](plugins/hermes/score-studio/config.example.yaml)
+into `~/.hermes/config.yaml` and run `hermes mcp test score-studio`.
 
 ## Authentication and release boundary
 

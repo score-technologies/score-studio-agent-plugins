@@ -51,10 +51,14 @@ const jsonFiles = [
   "plugins/claude/score-studio/.mcp.json",
   "plugins/gemini/score-studio/gemini-extension.json",
   ".claude-plugin/marketplace.json",
+  ".cursor-plugin/marketplace.json",
+  "plugins/cursor/score-studio/.cursor-plugin/plugin.json",
+  "plugins/cursor/score-studio/mcp.json",
 ];
 
+const manifests = new Map();
 for (const file of jsonFiles) {
-  JSON.parse(await readFile(resolve(root, file), "utf8"));
+  manifests.set(file, JSON.parse(await readFile(resolve(root, file), "utf8")));
 }
 
 const required = [
@@ -63,6 +67,9 @@ const required = [
   "plugins/openai/score-studio/skills/score-studio/SKILL.md",
   "plugins/claude/score-studio/skills/score-studio/SKILL.md",
   "plugins/gemini/score-studio/GEMINI.md",
+  "plugins/cursor/score-studio/skills/score-studio/SKILL.md",
+  "skills/score-studio/SKILL.md",
+  "plugins/hermes/score-studio/config.example.yaml",
   "LICENSE",
 ];
 await Promise.all(required.map((file) => access(resolve(root, file))));
@@ -70,6 +77,47 @@ await Promise.all(required.map((file) => access(resolve(root, file))));
 const openaiSkill = await readFile(resolve(root, required[2]), "utf8");
 const claudeSkill = await readFile(resolve(root, required[3]), "utf8");
 if (openaiSkill !== claudeSkill) throw new Error("OpenAI and Claude skills drifted");
+
+const releaseVersion = manifests.get("package.json").version;
+const versionedManifests = [
+  "plugins/openai/score-studio/.codex-plugin/plugin.json",
+  "plugins/claude/score-studio/.claude-plugin/plugin.json",
+  "plugins/gemini/score-studio/gemini-extension.json",
+  "plugins/cursor/score-studio/.cursor-plugin/plugin.json",
+];
+for (const file of versionedManifests) {
+  if (manifests.get(file).version !== releaseVersion) {
+    throw new Error(`${file} version does not match package ${releaseVersion}`);
+  }
+}
+
+const claudeMarketplace = manifests.get(".claude-plugin/marketplace.json");
+if (claudeMarketplace.metadata.version !== releaseVersion || claudeMarketplace.plugins[0]?.version !== releaseVersion) {
+  throw new Error("Claude marketplace version does not match package version");
+}
+
+const cursorMarketplace = manifests.get(".cursor-plugin/marketplace.json");
+if (cursorMarketplace.metadata.version !== releaseVersion) {
+  throw new Error("Cursor marketplace version does not match package version");
+}
+if (cursorMarketplace.plugins[0]?.source !== "./plugins/cursor/score-studio") {
+  throw new Error("Cursor marketplace source is not the bundled Cursor plugin");
+}
+
+const cursorManifest = manifests.get("plugins/cursor/score-studio/.cursor-plugin/plugin.json");
+if (!cursorManifest.variables?.required?.includes("SCORESTUDIO_TOKEN")) {
+  throw new Error("Cursor plugin must require SCORESTUDIO_TOKEN as a configured variable");
+}
+
+const cursorMcp = manifests.get("plugins/cursor/score-studio/mcp.json");
+if (cursorMcp.mcpServers?.["score-studio"]?.env?.SCORESTUDIO_TOKEN !== "${SCORESTUDIO_TOKEN}") {
+  throw new Error("Cursor MCP token must remain a variable placeholder");
+}
+
+const hermesSkill = await readFile(resolve(root, "skills/score-studio/SKILL.md"), "utf8");
+if (!hermesSkill.includes("required_environment_variables:\n  - name: SCORESTUDIO_TOKEN")) {
+  throw new Error("Hermes skill must declare secure SCORESTUDIO_TOKEN setup");
+}
 
 await validatePublicReleaseHygiene(root);
 

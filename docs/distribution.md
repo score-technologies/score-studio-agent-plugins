@@ -103,8 +103,39 @@ gallery discovery. Organization policy may need to enable MCP for Copilot.
 
 ## Cursor and other MCP hosts
 
-Keep the existing Cursor Marketplace package for rules, commands, agents, and
-skills, and add the shared remote MCP server once hosted.
+The consolidated Cursor package lives at `plugins/cursor/score-studio` and is
+registered by the root `.cursor-plugin/marketplace.json`. Import this repository
+as a Cursor marketplace, install `score-studio`, and configure its required
+`SCORESTUDIO_TOKEN` variable. The existing standalone Cursor repository remains
+supported for its current public marketplace listing.
+
+The package includes the portable Score Studio operating skill and starts the
+shared npm MCP server. `SCORESTUDIO_URL` is optional and overrides the production
+API for custom, staging, self-hosted, or local deployments.
+
+## Hermes Agent
+
+Hermes discovers the root `skills/score-studio` package through its GitHub tap
+support:
+
+```bash
+hermes skills tap add score-technologies/score-studio-agent-plugins
+hermes skills install score-technologies/score-studio-agent-plugins/score-studio
+```
+
+The skill declares `SCORESTUDIO_TOKEN` as a required environment variable, so
+Hermes collects it through its secure local setup and stores it outside model
+context. Configure the MCP runtime using
+`plugins/hermes/score-studio/config.example.yaml`, then verify discovery with:
+
+```bash
+hermes mcp test score-studio
+```
+
+Hermes resolves `${SCORESTUDIO_TOKEN}` from its environment when loading the MCP
+configuration. Do not place a literal token in `config.yaml`.
+
+## Other MCP hosts
 
 Windsurf Cascade accepts stdio, Streamable HTTP, and OAuth MCP servers. Before
 the hosted service exists, add the npm command to

@@ -1,6 +1,6 @@
 {
   "name": "score-studio",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Operate evidence-gated computer-vision workflows in Score Studio.",
   "settings": [
     {

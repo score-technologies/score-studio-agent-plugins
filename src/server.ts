@@ -3,7 +3,7 @@ import * as z from "zod/v4";
 
 import { ScoreStudioApiError, ScoreStudioClient } from "./client.js";
 
-const VERSION = "0.1.2";
+const VERSION = "0.2.0";
 export const DEFAULT_SCORESTUDIO_URL = "https://api.scorestudio.ai";
 
 export interface ServerOptions {

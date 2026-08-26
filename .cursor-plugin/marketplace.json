@@ -1,0 +1,17 @@
+{
+  "name": "score-studio-agent-plugins",
+  "owner": {
+    "name": "Score Technologies"
+  },
+  "metadata": {
+    "description": "Give your agents sight with Score Studio's evidence-backed computer vision layer",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "score-studio",
+      "source": "./plugins/cursor/score-studio",
+      "description": "Automate computer-vision data, annotation, training, evaluation, workflows, and deployment with Score Studio"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ test("lists tools and forwards authenticated Score Studio requests", async (t) =
   await server.connect(serverTransport);
   t.after(() => server.close());
 
-  const client = new Client({ name: "test", version: "0.1.2" });
+  const client = new Client({ name: "test", version: "0.2.0" });
   await client.connect(clientTransport);
   t.after(() => client.close());
 

@@ -1,0 +1,10 @@
+mcp_servers:
+  score-studio:
+    command: npx
+    args:
+      - -y
+      - "@score-technologies/score-studio-mcp"
+    env:
+      SCORESTUDIO_TOKEN: "${SCORESTUDIO_TOKEN}"
+    connect_timeout: 60
+    timeout: 180
