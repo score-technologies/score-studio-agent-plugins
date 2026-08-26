@@ -66,11 +66,13 @@ target another Score Studio environment.
 For local Streamable HTTP development:
 
 ```bash
-npm run start:http
+SCORESTUDIO_MCP_ALLOW_TOKEN_PASSTHROUGH=true npm run start:http
 ```
 
 The endpoint is `http://127.0.0.1:3000/mcp`; each request must include its own
 `Authorization: Bearer …` header. `/healthz` does not require authentication.
+Token passthrough is intentionally limited to this explicit local-development
+mode and must not be enabled on a hosted server.
 
 ## Container deployment
 
@@ -79,8 +81,15 @@ Studio API by default; callers provide their own bearer token on each request.
 
 ```bash
 docker build -t score-studio-mcp .
-docker run --rm -p 3000:3000 score-studio-mcp
+docker run --rm -p 3000:3000 -e SCORESTUDIO_MCP_INTERNAL_TOKEN score-studio-mcp
 ```
+
+In hosted mode, the MCP bearer token is exchanged through the RFC 8693 token
+exchange grant at `POST /v1/oauth/token`, authenticated with
+`SCORESTUDIO_MCP_INTERNAL_TOKEN`, before any Score Studio API request. The
+MCP-audience token is never forwarded to the API. `SCORESTUDIO_OAUTH_ISSUER`
+controls the issuer used in the OAuth protected resource challenge;
+`SCORESTUDIO_MCP_RESOURCE_METADATA_URL` can override its full metadata URL.
 
 ## Packages
 
