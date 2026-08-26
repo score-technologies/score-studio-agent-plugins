@@ -26,7 +26,12 @@ export type StoredCredential = {
   resource: string;
 };
 
-type OAuthMetadata = { authorization_endpoint: string; token_endpoint: string; revocation_endpoint?: string };
+type OAuthMetadata = {
+  authorization_endpoint: string;
+  token_endpoint: string;
+  revocation_endpoint?: string;
+  scorestudio_completion_url?: string;
+};
 
 export function credentialPath(env: NodeJS.ProcessEnv = process.env): string {
   if (env.SCORESTUDIO_CONFIG_DIR) return join(env.SCORESTUDIO_CONFIG_DIR, "credentials.json");
@@ -138,7 +143,21 @@ export async function oauthLogin(baseUrl = process.env.SCORESTUDIO_URL ?? DEFAUL
       callbackReject(new Error(error ?? "Authorization code missing"));
       return;
     }
-    response.writeHead(200, { "content-type": "text/plain" }).end("Score Studio login complete. You may close this window.");
+    if (metadata.scorestudio_completion_url) {
+      response
+        .writeHead(302, { Location: metadata.scorestudio_completion_url, "Cache-Control": "no-store" })
+        .end();
+    } else {
+      response.writeHead(200, { "content-type": "text/html; charset=utf-8", "Cache-Control": "no-store" }).end(
+        "<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>" +
+        "<title>Connected · Score Studio</title><style>body{margin:0;background:#090a0c;color:#f5f5f5;font:15px system-ui;" +
+        "display:grid;min-height:100vh;place-items:center}.card{width:min(440px,calc(100% - 48px));border:1px solid #303238;" +
+        "border-radius:10px;padding:36px;background:#111216}.mark{font:700 12px monospace;letter-spacing:.14em;color:#8bdfbd}" +
+        "h1{font-size:32px;font-weight:400;letter-spacing:-.04em;margin:18px 0 10px}p{color:#a6a8ad;line-height:1.6;margin:0}</style>" +
+        "<main class=card><div class=mark>✓ SCORE STUDIO</div><h1>Connection complete</h1>" +
+        "<p>You are signed in. Return to your terminal to continue.</p></main>",
+      );
+    }
     callbackResolve(code);
   });
   await new Promise<void>((resolve, reject) => server.listen(0, "127.0.0.1", resolve).once("error", reject));
