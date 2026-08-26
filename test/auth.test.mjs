@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { credentialPath, loadCredential, logout, oauthResource, resolveToken, saveCredential } from "../dist/auth.js";
+import { credentialPath, loadCredential, logout, nextAuthSelection, oauthResource, resolveToken, saveCredential } from "../dist/auth.js";
 
 test("stores and removes credentials with owner-only permissions", async () => {
   const directory = await mkdtemp(join(tmpdir(), "score-studio-auth-"));
@@ -36,4 +36,11 @@ test("OAuth audience defaults to the normalized API URL and supports an override
     oauthResource("http://127.0.0.1:8000/", { SCORESTUDIO_OAUTH_RESOURCE: "https://custom.example/resource" }),
     "https://custom.example/resource",
   );
+});
+
+test("auth method selection wraps with arrow keys", () => {
+  assert.equal(nextAuthSelection(0, "down"), 1);
+  assert.equal(nextAuthSelection(1, "down"), 0);
+  assert.equal(nextAuthSelection(0, "up"), 1);
+  assert.equal(nextAuthSelection(1, "up"), 0);
 });

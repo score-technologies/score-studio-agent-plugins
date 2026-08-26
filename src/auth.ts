@@ -4,6 +4,7 @@ import { createServer } from "node:http";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawn } from "node:child_process";
+import { emitKeypressEvents } from "node:readline";
 import { createInterface } from "node:readline/promises";
 import { Writable } from "node:stream";
 
@@ -189,13 +190,65 @@ async function promptApiKey(): Promise<StoredCredential> {
   } finally { rl.close(); muted.destroy(); }
 }
 
+const AUTH_METHODS = ["Browser OAuth", "API key"] as const;
+
+export function nextAuthSelection(current: number, key: "up" | "down"): number {
+  const offset = key === "up" ? -1 : 1;
+  return (current + offset + AUTH_METHODS.length) % AUTH_METHODS.length;
+}
+
+async function selectAuthMethod(): Promise<"oauth" | "api_key"> {
+  const input = process.stdin;
+  const output = process.stderr;
+  let selected = 0;
+  let rendered = false;
+
+  const render = () => {
+    if (rendered) output.write(`\x1b[${AUTH_METHODS.length}A`);
+    for (const [index, label] of AUTH_METHODS.entries()) {
+      output.write(`\r\x1b[2K${index === selected ? "❯" : " "} ${label}\n`);
+    }
+    rendered = true;
+  };
+
+  output.write("Sign in with:\n\x1b[?25l");
+  render();
+  emitKeypressEvents(input);
+  const wasRaw = input.isRaw;
+  input.setRawMode(true);
+  input.resume();
+
+  try {
+    return await new Promise<"oauth" | "api_key">((resolve, reject) => {
+      const onKeypress = (_character: string | undefined, key: { name?: string; ctrl?: boolean }) => {
+        if (key.ctrl && key.name === "c") {
+          input.off("keypress", onKeypress);
+          reject(new Error("Authentication cancelled"));
+          return;
+        }
+        if (key.name === "up" || key.name === "down") {
+          selected = nextAuthSelection(selected, key.name);
+          render();
+          return;
+        }
+        if (key.name === "return" || key.name === "enter") {
+          input.off("keypress", onKeypress);
+          resolve(selected === 0 ? "oauth" : "api_key");
+        }
+      };
+      input.on("keypress", onKeypress);
+    });
+  } finally {
+    input.setRawMode(wasRaw);
+    input.pause();
+    output.write("\x1b[?25h");
+  }
+}
+
 export async function interactiveLogin(): Promise<StoredCredential> {
   if (!process.stdin.isTTY || !process.stderr.isTTY) throw new Error("Authentication is required. Run `score-studio auth login` in a terminal or set SCORESTUDIO_TOKEN.");
-  const rl = createInterface({ input: process.stdin, output: process.stderr });
-  let choice: string;
-  try { choice = (await rl.question("Sign in with (1) browser OAuth or (2) API key? [1]: ")).trim(); }
-  finally { rl.close(); }
-  const credential = choice === "2" ? await promptApiKey() : await oauthLogin();
+  const method = await selectAuthMethod();
+  const credential = method === "api_key" ? await promptApiKey() : await oauthLogin();
   await saveCredential(credential);
   console.error("Authentication saved securely.");
   return credential;
