@@ -38,6 +38,26 @@ test("exchanges an MCP token for an API token and caches it", async () => {
   assert.equal(requests.length, 2);
 });
 
+test("supports a private API address with a distinct public OAuth audience", async () => {
+  let request;
+  const exchange = new InternalTokenExchange({
+    apiBaseUrl: "http://platform:8000",
+    apiResource: "https://api.scorestudio.ai",
+    internalToken: "internal-secret",
+    fetch: async (url, init) => {
+      request = { url, body: Object.fromEntries(new URLSearchParams(init.body)) };
+      return new Response(JSON.stringify({ access_token: "api-access-token", expires_in: 120 }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+  });
+
+  assert.equal(await exchange.exchange("mcp-subject-token"), "api-access-token");
+  assert.equal(request.url, "http://platform:8000/v1/oauth/token");
+  assert.equal(request.body.resource, "https://api.scorestudio.ai");
+});
+
 test("does not include upstream details or tokens in exchange errors", async () => {
   const exchange = new InternalTokenExchange({ apiBaseUrl: "https://api.scorestudio.ai", internalToken: "internal-secret", fetch: async () => new Response(JSON.stringify({ detail: "subject-secret rejected" }), { status: 401 }) });
   await assert.rejects(() => exchange.exchange("subject-secret"), (error) => {

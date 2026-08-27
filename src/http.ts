@@ -10,12 +10,15 @@ import { InternalTokenExchange, protectedResourceMetadataUrl } from "./token-exc
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
 const baseUrl = process.env.SCORESTUDIO_URL ?? DEFAULT_SCORESTUDIO_URL;
+const apiResource = process.env.SCORESTUDIO_API_RESOURCE ?? baseUrl;
 const internalToken = process.env.SCORESTUDIO_MCP_INTERNAL_TOKEN;
 const allowPassthrough = process.env.SCORESTUDIO_MCP_ALLOW_TOKEN_PASSTHROUGH === "true";
 if (!internalToken && !allowPassthrough) {
   throw new Error("Hosted MCP requires SCORESTUDIO_MCP_INTERNAL_TOKEN. For local API-token development only, set SCORESTUDIO_MCP_ALLOW_TOKEN_PASSTHROUGH=true.");
 }
-const exchange = internalToken ? new InternalTokenExchange({ apiBaseUrl: baseUrl, internalToken }) : undefined;
+const exchange = internalToken
+  ? new InternalTokenExchange({ apiBaseUrl: baseUrl, apiResource, internalToken })
+  : undefined;
 const resourceMetadata = protectedResourceMetadataUrl(baseUrl);
 
 const handler = createMcpHandler(async ({ requestInfo }) => {

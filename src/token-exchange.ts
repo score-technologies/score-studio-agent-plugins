@@ -5,6 +5,7 @@ type Fetch = typeof globalThis.fetch;
 
 export interface InternalTokenExchangeOptions {
   apiBaseUrl: string;
+  apiResource?: string;
   internalToken: string;
   fetch?: Fetch;
   now?: () => number;
@@ -39,6 +40,7 @@ export class InternalTokenExchange {
 
   private async request(subjectToken: string, key: string): Promise<string> {
     const apiBaseUrl = this.options.apiBaseUrl.replace(/\/+$/, "");
+    const apiResource = (this.options.apiResource ?? apiBaseUrl).replace(/\/+$/, "");
     const response = await this.fetch(`${apiBaseUrl}/v1/oauth/token`, {
       method: "POST",
       headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded", "X-Internal-Token": this.options.internalToken },
@@ -47,7 +49,7 @@ export class InternalTokenExchange {
         subject_token: subjectToken,
         subject_token_type: "urn:ietf:params:oauth:token-type:access_token",
         requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-        resource: apiBaseUrl,
+        resource: apiResource,
       }),
       signal: AbortSignal.timeout(15_000),
     });
