@@ -9,11 +9,12 @@ export const DEFAULT_SCORESTUDIO_URL = "https://api.scorestudio.ai";
 export interface ServerOptions {
   baseUrl?: string;
   token?: string;
+  tokenProvider?: () => Promise<string>;
 }
 
-function config(options: ServerOptions): { baseUrl: string; token: string } {
+function config(options: ServerOptions): { baseUrl: string; token: string | (() => Promise<string>) } {
   const baseUrl = options.baseUrl ?? process.env.SCORESTUDIO_URL ?? DEFAULT_SCORESTUDIO_URL;
-  const token = options.token ?? process.env.SCORESTUDIO_TOKEN ?? "";
+  const token = options.tokenProvider ?? options.token ?? process.env.SCORESTUDIO_TOKEN ?? "";
   if (!token) throw new Error("SCORESTUDIO_TOKEN is required");
   return { baseUrl, token };
 }

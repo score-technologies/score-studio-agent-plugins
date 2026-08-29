@@ -5,15 +5,27 @@ import { toNodeHandler, type NodeIncomingMessageLike, type NodeServerResponseLik
 import { createMcpHandler } from "@modelcontextprotocol/server";
 
 import { buildServer, DEFAULT_SCORESTUDIO_URL } from "./server.js";
+import { InternalTokenExchange, protectedResourceMetadataUrl } from "./token-exchange.js";
 
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
 const baseUrl = process.env.SCORESTUDIO_URL ?? DEFAULT_SCORESTUDIO_URL;
+const apiResource = process.env.SCORESTUDIO_API_RESOURCE ?? baseUrl;
+const exchangeSecret = process.env.SCORESTUDIO_MCP_EXCHANGE_SECRET;
+const allowPassthrough = process.env.SCORESTUDIO_MCP_ALLOW_TOKEN_PASSTHROUGH === "true";
+if (!exchangeSecret && !allowPassthrough) {
+  throw new Error("Hosted MCP requires SCORESTUDIO_MCP_EXCHANGE_SECRET. For local API-token development only, set SCORESTUDIO_MCP_ALLOW_TOKEN_PASSTHROUGH=true.");
+}
+const exchange = exchangeSecret
+  ? new InternalTokenExchange({ apiBaseUrl: baseUrl, apiResource, internalToken: exchangeSecret })
+  : undefined;
+const resourceMetadata = protectedResourceMetadataUrl(baseUrl);
 
-const handler = createMcpHandler(({ requestInfo }) => {
+const handler = createMcpHandler(async ({ requestInfo }) => {
   const authorization = requestInfo?.headers.get("authorization") ?? "";
   const token = authorization.replace(/^Bearer\s+/i, "");
-  return buildServer({ baseUrl, token });
+  const apiToken = exchange ? await exchange.exchange(token) : token;
+  return buildServer({ baseUrl, token: apiToken });
 });
 const handleMcp = toNodeHandler(handler);
 
@@ -30,7 +42,10 @@ const server = createServer(async (request, response) => {
     return;
   }
   if (!request.headers.authorization?.match(/^Bearer\s+\S+/i)) {
-    response.writeHead(401, { "content-type": "application/json" });
+    response.writeHead(401, {
+      "content-type": "application/json",
+      "www-authenticate": `Bearer resource_metadata="${resourceMetadata}"`,
+    });
     response.end(JSON.stringify({ error: "missing_bearer_token" }));
     return;
   }

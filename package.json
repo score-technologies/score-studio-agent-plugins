@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "bin": {
-    "score-studio-mcp": "./dist/stdio.js"
+    "score-studio": "./dist/stdio.js"
   },
   "files": [
     "dist",
@@ -18,6 +18,8 @@
     "test": "node --test test/*.test.mjs",
     "check": "npm run build && npm test && node scripts/validate-packages.mjs",
     "start": "node dist/stdio.js",
+    "auth": "node dist/stdio.js auth login",
+    "auth:logout": "node dist/stdio.js auth logout",
     "start:http": "node dist/http.js"
   },
   "dependencies": {
