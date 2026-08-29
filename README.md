@@ -85,13 +85,13 @@ docker run --rm -p 3000:3000 \
   -e SCORESTUDIO_URL=https://api.scorestudio.ai \
   -e SCORESTUDIO_OAUTH_ISSUER=https://api.scorestudio.ai \
   -e SCORESTUDIO_API_RESOURCE=https://api.scorestudio.ai \
-  -e SCORESTUDIO_MCP_INTERNAL_TOKEN=<shared-secret> \
+  -e SCORESTUDIO_MCP_EXCHANGE_SECRET=<dedicated-exchange-secret> \
   score-studio-mcp
 ```
 
 In hosted mode, the MCP bearer token is exchanged through the RFC 8693 token
 exchange grant at `POST /v1/oauth/token`, authenticated with
-`SCORESTUDIO_MCP_INTERNAL_TOKEN`, before any Score Studio API request. The
+`SCORESTUDIO_MCP_EXCHANGE_SECRET`, before any Score Studio API request. The
 MCP-audience token is never forwarded to the API. `SCORESTUDIO_OAUTH_ISSUER`
 controls the issuer used in the OAuth protected resource challenge;
 `SCORESTUDIO_MCP_RESOURCE_METADATA_URL` can override its full metadata URL.

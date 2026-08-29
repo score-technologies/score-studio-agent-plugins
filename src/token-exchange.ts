@@ -43,7 +43,7 @@ export class InternalTokenExchange {
     const apiResource = (this.options.apiResource ?? apiBaseUrl).replace(/\/+$/, "");
     const response = await this.fetch(`${apiBaseUrl}/v1/oauth/token`, {
       method: "POST",
-      headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded", "X-Internal-Token": this.options.internalToken },
+      headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded", "X-OAuth-Exchange-Secret": this.options.internalToken },
       body: new URLSearchParams({
         grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
         subject_token: subjectToken,

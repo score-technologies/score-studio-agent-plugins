@@ -17,6 +17,7 @@ PLATFORM_WEB_APP_URL=https://scorestudio.ai
 PLATFORM_OAUTH_ISSUER=https://api.scorestudio.ai
 PLATFORM_OAUTH_RESOURCE=https://api.scorestudio.ai
 PLATFORM_OAUTH_MCP_RESOURCE=https://mcp.scorestudio.ai/mcp
+PLATFORM_OAUTH_EXCHANGE_SECRET=<dedicated-random-secret-at-least-32-characters>
 PLATFORM_INTERNAL_API_TOKEN=<shared-random-secret>
 PLATFORM_CORS_ORIGINS=["https://scorestudio.ai"]
 NEXT_PUBLIC_API_URL=https://api.scorestudio.ai
@@ -37,7 +38,7 @@ manager or protected VPS environment.
 SCORESTUDIO_URL=https://api.scorestudio.ai
 SCORESTUDIO_OAUTH_ISSUER=https://api.scorestudio.ai
 SCORESTUDIO_API_RESOURCE=https://api.scorestudio.ai
-SCORESTUDIO_MCP_INTERNAL_TOKEN=<same-shared-random-secret>
+SCORESTUDIO_MCP_EXCHANGE_SECRET=<same-dedicated-random-secret>
 HOST=0.0.0.0
 PORT=3000
 ```

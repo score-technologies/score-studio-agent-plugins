@@ -24,7 +24,7 @@ test("exchanges an MCP token for an API token and caches it", async () => {
   assert.equal(requests.length, 1);
   assert.deepEqual(requests[0], {
     url: "https://api.scorestudio.ai/v1/oauth/token",
-    headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded", "X-Internal-Token": "internal-secret" },
+    headers: { Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded", "X-OAuth-Exchange-Secret": "internal-secret" },
     body: {
       grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
       subject_token: "mcp-subject-token",
